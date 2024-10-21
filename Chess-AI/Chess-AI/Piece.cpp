@@ -35,7 +35,7 @@ sf::Vector2f Piece::getPosition() const {
 
 bool Piece::canMoveTo(int startX, int startY, int endX, int endY, const ChessBoard& board) const {
     if (startX == endX && startY == endY) {
-        return false; // Si la position de départ et d'arrivée est la même
+        return false;
     }
 
     switch (type) {
@@ -58,9 +58,9 @@ bool Piece::canMoveTo(int startX, int startY, int endX, int endY, const ChessBoa
             if (startY == 6 && endY == startY - 2 && startX == endX) return true;  // Premier coup du pion noir
             return endY == startY - 1 && startX == endX;
         }
-    case PieceType::None:  // Ajout du cas "None"
-        return false;  // Aucune pièce ne peut se déplacer
+    case PieceType::None:
+        return false;
     default:
-        return false;  // Sécurité supplémentaire pour les cas non gérés
+        return false;
     }
 }

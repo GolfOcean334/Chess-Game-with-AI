@@ -106,12 +106,28 @@ void ChessBoard::draw(sf::RenderWindow& window) {
     }
 }
 
+bool ChessBoard::isOccupied(int x, int y) const {
+    for (const Piece& piece : pieces) {
+        if (piece.getPosition().x == x * 100 && piece.getPosition().y == y * 100) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool ChessBoard::movePiece(int startX, int startY, int endX, int endY) {
     for (Piece& piece : pieces) {
-        // Vérification de la position initial de la pièce
         if (piece.getPosition().x == startX * 100 && piece.getPosition().y == startY * 100) {
-            // Vérifier si la pièce peut se déplacer à la position endX, endY
             if (piece.canMoveTo(startX, startY, endX, endY, *this)) {
+
+                // Vérification s'il y a une pièce adverse à capturer
+                for (auto it = pieces.begin(); it != pieces.end(); ++it) {
+                    if (it->getPosition().x == endX * 100 && it->getPosition().y == endY * 100 && it->getColor() != piece.getColor()) {
+                        pieces.erase(it);  // Capturer la pièce adverse
+                        break;
+                    }
+                }
+
                 // Déplacer la pièce
                 piece.setPosition(endX * 100, endY * 100);
                 return true;

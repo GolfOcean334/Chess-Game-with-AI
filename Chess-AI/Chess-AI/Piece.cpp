@@ -44,7 +44,22 @@ bool Piece::canMoveTo(int startX, int startY, int endX, int endY, const ChessBoa
     case PieceType::Queen:
         return (startX == endX || startY == endY) || (abs(startX - endX) == abs(startY - endY)); // Déplacement en ligne ou en diagonale (reine)
     case PieceType::Rook:
-        return startX == endX || startY == endY; // La tour se déplace en ligne droite
+        if (startX == endX) { // Mouvement vertical
+        int minY = std::min(startY, endY);
+        int maxY = std::max(startY, endY);
+        for (int y = minY; y < maxY; ++y) {
+            if (board.isOccupied(startX, y)) return false; // Empêche de sauter par-dessus d'autres pièces
+        }
+        return true;
+    } else if (startY == endY) { // Mouvement horizontal
+        int minX = std::min(startX, endX);
+        int maxX = std::max(startX, endX);
+        for (int x = minX; x < maxX; ++x) {
+            if (board.isOccupied(x, startY)) return false;
+        }
+        return true;
+    }
+    return false;
     case PieceType::Bishop:
         return abs(startX - endX) == abs(startY - endY); // Le fou se déplace en diagonale
     case PieceType::Knight:

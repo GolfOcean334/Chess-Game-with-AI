@@ -30,7 +30,6 @@ int main() {
                 }
             }
         }
-
         window.clear();
         chessBoard.draw(window);
         window.display();

@@ -13,6 +13,8 @@ public:
     void loadPieces();
     void draw(sf::RenderWindow& window);
 
+    bool isOccupied(int x, int y)const;
+
     bool movePiece(int startX, int startY, int endX, int endY);
 
 private:

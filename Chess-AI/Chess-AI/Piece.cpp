@@ -47,14 +47,14 @@ bool Piece::canMoveTo(int startX, int startY, int endX, int endY, const ChessBoa
         if (startX == endX) { // Mouvement vertical
         int minY = std::min(startY, endY);
         int maxY = std::max(startY, endY);
-        for (int y = minY; y < maxY; ++y) {
+        for (int y = minY + 1; y < maxY; ++y) {
             if (board.isOccupied(startX, y)) return false; // Empêche de sauter par-dessus d'autres pièces
         }
         return true;
     } else if (startY == endY) { // Mouvement horizontal
         int minX = std::min(startX, endX);
         int maxX = std::max(startX, endX);
-        for (int x = minX; x < maxX; ++x) {
+        for (int x = minX + 1; x < maxX; ++x) {
             if (board.isOccupied(x, startY)) return false;
         }
         return true;

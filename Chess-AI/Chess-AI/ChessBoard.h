@@ -8,6 +8,9 @@
 
 class ChessBoard {
 public:
+    enum class PlayerColor { White, Black };
+    PlayerColor currentPlayer;
+
     ChessBoard();
     void initChessBoard();
     void loadPieces();

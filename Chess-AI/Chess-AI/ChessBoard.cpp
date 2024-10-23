@@ -1,6 +1,6 @@
 #include "ChessBoard.h"
 
-ChessBoard::ChessBoard() {
+ChessBoard::ChessBoard() : currentPlayer(PlayerColor::White) {
     blackKingTexture.loadFromFile("PNG/Black King.png");
     whiteKingTexture.loadFromFile("PNG/White King.png");
     blackQueenTexture.loadFromFile("PNG/Black Queen.png");
@@ -156,34 +156,43 @@ bool ChessBoard::isClearPath(int startX, int startY, int endX, int endY) const {
 
 bool ChessBoard::movePiece(int startX, int startY, int endX, int endY) {
     for (Piece& piece : pieces) {
-        if (piece.getPosition().x == startX * 100 && piece.getPosition().y == startY * 100) {
-            if (piece.canMoveTo(startX, startY, endX, endY, *this)) {
+        if ((currentPlayer == PlayerColor::White && piece.getColor() == PieceColor::White) ||
+            (currentPlayer == PlayerColor::Black && piece.getColor() == PieceColor::Black)) {
 
-                // Vérifie s'il y a une pièce à la position de destination
-                for (const Piece& otherPiece : pieces) {
-                    if (otherPiece.getPosition().x == endX * 100 && otherPiece.getPosition().y == endY * 100) {
-                        if (otherPiece.getColor() == piece.getColor()) {
-                            return false; // On ne peut pas capturer sa propre pièce
+            if (piece.getPosition().x == startX * 100 && piece.getPosition().y == startY * 100) {
+                if (piece.canMoveTo(startX, startY, endX, endY, *this)) {
+
+                    // Vérifie s'il y a une pièce à la position de destination
+                    for (const Piece& otherPiece : pieces) {
+                        if (otherPiece.getPosition().x == endX * 100 && otherPiece.getPosition().y == endY * 100) {
+                            if (otherPiece.getColor() == piece.getColor()) {
+                                return false; // On ne peut pas capturer sa propre pièce
+                            }
                         }
                     }
-                }
 
-                // Déplace la pièce
-                piece.setPosition(endX * 100, endY * 100);
+                    // Déplace la pièce
+                    piece.setPosition(endX * 100, endY * 100);
 
-                // Vérifie s'il y a une pièce adverse à capturer
-                for (auto it = pieces.begin(); it != pieces.end();) {
-                    if (it->getPosition().x == endX * 100 && it->getPosition().y == endY * 100 && it->getColor() != piece.getColor()) {
-                        it = pieces.erase(it);
-                        break;
+                    // Vérifie s'il y a une pièce adverse à capturer
+                    for (auto it = pieces.begin(); it != pieces.end();) {
+                        if (it->getPosition().x == endX * 100 && it->getPosition().y == endY * 100 && it->getColor() != piece.getColor()) {
+                            if (it->getType() == PieceType::King) {
+                                exit(0);
+                            }
+                            it = pieces.erase(it);
+                            break;
+                        }
+                        else {
+                            ++it;
+                        }
                     }
-                    else {
-                        ++it;
-                    }
+                    currentPlayer = (currentPlayer == PlayerColor::White) ? PlayerColor::Black : PlayerColor::White;
+
+                    return true;
                 }
-                return true;
+                return false;
             }
-            return false;
         }
     }
     return false;

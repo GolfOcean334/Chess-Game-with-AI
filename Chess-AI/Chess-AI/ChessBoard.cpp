@@ -157,18 +157,28 @@ void ChessBoard::promotePawn(Piece& pawn) {
     // Création d'une nouvelle fenêtre de promotion
     sf::RenderWindow promotionWindow(sf::VideoMode(500, 150), "Promote Pawn");
 
-    // Création des boutons pour la promotion
-    sf::RectangleShape queenButton(sf::Vector2f(100, 100));
-    queenButton.setPosition(50, 25);
-    queenButton.setFillColor(sf::Color::Blue);
+    int iconSize = 100.f;
+    // Création des sprites pour les boutons de promotion
+    sf::RectangleShape queenSprite(sf::Vector2f(iconSize, iconSize));
+    sf::RectangleShape rookSprite(sf::Vector2f(iconSize, iconSize));
+    sf::RectangleShape bishopSprite(sf::Vector2f(iconSize, iconSize));
 
-    sf::RectangleShape rookButton(sf::Vector2f(100, 100));
-    rookButton.setPosition(200, 25);
-    rookButton.setFillColor(sf::Color::Red);
+    // Choisir la texture en fonction de la couleur du pion
+    if (pawn.getColor() == PieceColor::White) {
+        queenSprite.setTexture(&whiteQueenTexture);
+        rookSprite.setTexture(&whiteRookTexture);
+        bishopSprite.setTexture(&whiteBishopTexture);
+    }
+    else {
+        queenSprite.setTexture(&blackQueenTexture);
+        rookSprite.setTexture(&blackRookTexture);
+        bishopSprite.setTexture(&blackBishopTexture);
+    }
 
-    sf::RectangleShape bishopButton(sf::Vector2f(100, 100));
-    bishopButton.setPosition(350, 25);
-    bishopButton.setFillColor(sf::Color::Yellow);
+    // Position des sprites dans la fenêtre
+    queenSprite.setPosition(50, 25);
+    rookSprite.setPosition(200, 25);
+    bishopSprite.setPosition(350, 25);
 
     // Boucle d'événements pour gérer le choix
     while (promotionWindow.isOpen()) {
@@ -178,7 +188,7 @@ void ChessBoard::promotePawn(Piece& pawn) {
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     sf::Vector2i mousePos = sf::Mouse::getPosition(promotionWindow);
-                    if (queenButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    if (queenSprite.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         pawn.setType(PieceType::Queen);
                         if (pawn.getColor() == PieceColor::White)
                         {
@@ -187,7 +197,7 @@ void ChessBoard::promotePawn(Piece& pawn) {
                             pawn.setTexture(blackQueenTexture);
                         promotionWindow.close();
                     }
-                    else if (rookButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    else if (rookSprite.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         pawn.setType(PieceType::Rook);
                         if (pawn.getColor() == PieceColor::White)
                         {
@@ -197,7 +207,7 @@ void ChessBoard::promotePawn(Piece& pawn) {
                             pawn.setTexture(blackRookTexture);
                         promotionWindow.close();
                     }
-                    else if (bishopButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    else if (bishopSprite.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         pawn.setType(PieceType::Bishop); 
                         if (pawn.getColor() == PieceColor::White)
                         {
@@ -211,10 +221,10 @@ void ChessBoard::promotePawn(Piece& pawn) {
             }
         }
 
-        promotionWindow.clear();
-        promotionWindow.draw(queenButton);
-        promotionWindow.draw(rookButton);
-        promotionWindow.draw(bishopButton);
+        promotionWindow.clear(sf::Color::White);
+        promotionWindow.draw(queenSprite);
+        promotionWindow.draw(rookSprite);
+        promotionWindow.draw(bishopSprite);
         promotionWindow.display();
     }
 }

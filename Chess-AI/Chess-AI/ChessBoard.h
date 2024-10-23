@@ -6,10 +6,17 @@
 #include "Piece.h"
 #include <vector>
 
+struct LastMove {
+    int startX, startY, endX, endY;
+    PieceType pieceType;
+    PieceColor pieceColor;
+};
+
 class ChessBoard {
 public:
     enum class PlayerColor { White, Black };
     PlayerColor currentPlayer;
+    LastMove lastMove;
 
     ChessBoard();
     void initChessBoard();
@@ -24,6 +31,7 @@ public:
     void promotePawn(Piece& piece);
 
     bool movePiece(int startX, int startY, int endX, int endY);
+    bool handleEnPassant(int startX, int startY, int endX, int endY, Piece& piece);
 
 private:
     sf::RectangleShape chessBoardSquares[8][8];

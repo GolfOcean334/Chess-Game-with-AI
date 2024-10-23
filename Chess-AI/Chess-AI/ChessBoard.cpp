@@ -229,6 +229,25 @@ void ChessBoard::promotePawn(Piece& pawn) {
     }
 }
 
+bool ChessBoard::handleEnPassant(int startX, int startY, int endX, int endY, Piece& piece) {
+    // Vérifie si c'est un pion et que le mouvement est en diagonale
+    if (piece.getType() == PieceType::Pawn && abs(startX - endX) == 1 && abs(startY - endY) == 1) {
+        // Vérifie si le dernier mouvement était un pion qui a avancé de deux cases
+        if (lastMove.pieceType == PieceType::Pawn && abs(lastMove.startY - lastMove.endY) == 2) {
+            // Vérifie si le pion se trouve à côté du pion adverse et que le mouvement est une prise en passant
+            if (lastMove.endX == endX && lastMove.endY == startY) {
+                // Capture du pion adverse
+                for (auto it = pieces.begin(); it != pieces.end(); ++it) {
+                    if (it->getPosition().x == lastMove.endX * 100 && it->getPosition().y == lastMove.endY * 100) {
+                        pieces.erase(it);  // Retirer le pion capturé
+                        return true;  // Prise en passant réussie
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
 
 bool ChessBoard::movePiece(int startX, int startY, int endX, int endY) {
     for (Piece& piece : pieces) {
@@ -247,7 +266,14 @@ bool ChessBoard::movePiece(int startX, int startY, int endX, int endY) {
                         }
                     }
 
-                    // Déplace la pièce
+                    // Vérifie si la prise en passant est possible
+                    if (piece.getType() == PieceType::Pawn && handleEnPassant(startX, startY, endX, endY, piece)) {
+                        piece.setPosition(endX * 100, endY * 100);  // Déplace le pion
+                        currentPlayer = (currentPlayer == PlayerColor::White) ? PlayerColor::Black : PlayerColor::White;
+                        return true;
+                    }
+
+                    // Déplace la pièce normalement
                     piece.setPosition(endX * 100, endY * 100);
 
                     if (piece.getType() == PieceType::Pawn && (endY == 0 || endY == 7)) {
@@ -268,6 +294,8 @@ bool ChessBoard::movePiece(int startX, int startY, int endX, int endY) {
                             ++it;
                         }
                     }
+                    lastMove = { startX, startY, endX, endY, piece.getType(), piece.getColor() };
+
                     currentPlayer = (currentPlayer == PlayerColor::White) ? PlayerColor::Black : PlayerColor::White;
 
                     return true;
@@ -278,4 +306,3 @@ bool ChessBoard::movePiece(int startX, int startY, int endX, int endY) {
     }
     return false;
 }
-

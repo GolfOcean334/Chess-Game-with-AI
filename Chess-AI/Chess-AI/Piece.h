@@ -15,6 +15,9 @@ public:
     Piece(PieceType type, PieceColor color, const sf::Texture& texture);
 
     void setPosition(float x, float y);
+    void setType(PieceType newType);
+    void setTexture(const sf::Texture& texture);
+
     void draw(sf::RenderWindow& window);
 
     PieceType getType() const;

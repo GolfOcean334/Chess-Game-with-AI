@@ -3,8 +3,7 @@
 
 Piece::Piece() : type(PieceType::None), color(PieceColor::None) {}
 
-Piece::Piece(PieceType type, PieceColor color, const sf::Texture& texture)
-    : type(type), color(color) {
+Piece::Piece(PieceType type, PieceColor color, const sf::Texture& texture) : type(type), color(color) {
     sprite.setTexture(texture);
 
     sf::Vector2u textureSize = texture.getSize();
@@ -15,6 +14,14 @@ Piece::Piece(PieceType type, PieceColor color, const sf::Texture& texture)
 
 void Piece::setPosition(float x, float y) {
     sprite.setPosition(x, y);
+}
+
+void Piece::setType(PieceType newType) {
+    type = newType;
+}
+
+void Piece::setTexture(const sf::Texture& texture) {
+    sprite.setTexture(texture);
 }
 
 void Piece::draw(sf::RenderWindow& window) {

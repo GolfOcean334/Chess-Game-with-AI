@@ -153,6 +153,74 @@ bool ChessBoard::isClearPath(int startX, int startY, int endX, int endY) const {
     return true;
 }
 
+void ChessBoard::promotePawn(Piece& pawn) {
+    // Création d'une nouvelle fenêtre de promotion
+    sf::RenderWindow promotionWindow(sf::VideoMode(300, 200), "Promote Pawn");
+
+    // Création des boutons pour la promotion
+    sf::RectangleShape queenButton(sf::Vector2f(100, 50));
+    queenButton.setPosition(50, 50);
+    queenButton.setFillColor(sf::Color::Blue);
+
+    sf::RectangleShape rookButton(sf::Vector2f(100, 50));
+    rookButton.setPosition(50, 110);
+    rookButton.setFillColor(sf::Color::Red);
+
+    sf::RectangleShape bishopButton(sf::Vector2f(50, 50));
+    bishopButton.setPosition(200, 50);
+    bishopButton.setFillColor(sf::Color::Yellow);
+
+    // Boucle d'événements pour gérer le choix
+    while (promotionWindow.isOpen()) {
+        sf::Event event;
+        while (promotionWindow.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                promotionWindow.close();
+
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    sf::Vector2i mousePos = sf::Mouse::getPosition(promotionWindow);
+                    if (queenButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                        pawn.setType(PieceType::Queen);
+                        if (pawn.getColor() == PieceColor::White)
+                        {
+                            pawn.setTexture(whiteQueenTexture);
+                        }else
+                            pawn.setTexture(blackQueenTexture);
+                        promotionWindow.close();
+                    }
+                    else if (rookButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                        pawn.setType(PieceType::Rook);
+                        if (pawn.getColor() == PieceColor::White)
+                        {
+                            pawn.setTexture(whiteRookTexture);
+                        }
+                        else
+                            pawn.setTexture(blackRookTexture);
+                        promotionWindow.close();
+                    }
+                    else if (bishopButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                        pawn.setType(PieceType::Bishop); 
+                        if (pawn.getColor() == PieceColor::White)
+                        {
+                            pawn.setTexture(whiteBishopTexture);
+                        }
+                        else
+                            pawn.setTexture(blackBishopTexture);
+                        promotionWindow.close();
+                    }
+                }
+            }
+        }
+
+        promotionWindow.clear();
+        promotionWindow.draw(queenButton);
+        promotionWindow.draw(rookButton);
+        promotionWindow.draw(bishopButton);
+        promotionWindow.display();
+    }
+}
+
 
 bool ChessBoard::movePiece(int startX, int startY, int endX, int endY) {
     for (Piece& piece : pieces) {
@@ -173,6 +241,11 @@ bool ChessBoard::movePiece(int startX, int startY, int endX, int endY) {
 
                     // Déplace la pièce
                     piece.setPosition(endX * 100, endY * 100);
+
+                    if (piece.getType() == PieceType::Pawn && (endY == 0 || endY == 7)) {
+                        // Appel à la méthode pour gérer la promotion
+                        promotePawn(piece);
+                    }
 
                     // Vérifie s'il y a une pièce adverse à capturer
                     for (auto it = pieces.begin(); it != pieces.end();) {

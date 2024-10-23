@@ -21,6 +21,8 @@ public:
     bool isOccupied(int x, int y)const;
     bool isClearPath(int startX, int startY, int endX, int endY) const;
 
+    void promotePawn(Piece& piece);
+
     bool movePiece(int startX, int startY, int endX, int endY);
 
 private:

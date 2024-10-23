@@ -120,15 +120,24 @@ bool ChessBoard::movePiece(int startX, int startY, int endX, int endY) {
         if (piece.getPosition().x == startX * 100 && piece.getPosition().y == startY * 100) {
             if (piece.canMoveTo(startX, startY, endX, endY, *this)) {
 
-                // Vérification s'il y a une pièce adverse à capturer
+                // Vérifie s'il y a une pièce à la position de destination
+                for (const Piece& otherPiece : pieces) {
+                    if (otherPiece.getPosition().x == endX * 100 && otherPiece.getPosition().y == endY * 100) {
+                        if (otherPiece.getColor() == piece.getColor()) {
+                            return false;
+                        }
+                    }
+                }
+
+                // Vérifie s'il y a une pièce adverse à capturer
                 for (auto it = pieces.begin(); it != pieces.end(); ++it) {
                     if (it->getPosition().x == endX * 100 && it->getPosition().y == endY * 100 && it->getColor() != piece.getColor()) {
-                        pieces.erase(it);  // Capturer la pièce adverse
+                        pieces.erase(it);
                         break;
                     }
                 }
 
-                // Déplacer la pièce
+                // Déplace la pièce
                 piece.setPosition(endX * 100, endY * 100);
                 return true;
             }

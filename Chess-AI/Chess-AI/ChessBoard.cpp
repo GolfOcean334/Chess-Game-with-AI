@@ -163,21 +163,24 @@ bool ChessBoard::movePiece(int startX, int startY, int endX, int endY) {
                 for (const Piece& otherPiece : pieces) {
                     if (otherPiece.getPosition().x == endX * 100 && otherPiece.getPosition().y == endY * 100) {
                         if (otherPiece.getColor() == piece.getColor()) {
-                            return false;
+                            return false; // On ne peut pas capturer sa propre pièce
                         }
-                    }
-                }
-
-                // Vérifie s'il y a une pièce adverse à capturer
-                for (auto it = pieces.begin(); it != pieces.end(); ++it) {
-                    if (it->getPosition().x == endX * 100 && it->getPosition().y == endY * 100 && it->getColor() != piece.getColor()) {
-                        pieces.erase(it);
-                        break;
                     }
                 }
 
                 // Déplace la pièce
                 piece.setPosition(endX * 100, endY * 100);
+
+                // Vérifie s'il y a une pièce adverse à capturer
+                for (auto it = pieces.begin(); it != pieces.end();) {
+                    if (it->getPosition().x == endX * 100 && it->getPosition().y == endY * 100 && it->getColor() != piece.getColor()) {
+                        it = pieces.erase(it);
+                        break;
+                    }
+                    else {
+                        ++it;
+                    }
+                }
                 return true;
             }
             return false;
@@ -185,3 +188,4 @@ bool ChessBoard::movePiece(int startX, int startY, int endX, int endY) {
     }
     return false;
 }
+

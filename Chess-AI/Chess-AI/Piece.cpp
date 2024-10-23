@@ -40,7 +40,8 @@ bool Piece::canMoveTo(int startX, int startY, int endX, int endY, const ChessBoa
 
     switch (type) {
     case PieceType::King:
-        return abs(endX - startX) <= 1 && abs(endY - startY) <= 1;  // Déplacement d'une case autour du roi
+        // Déplacement d'une case autour du roi
+        return abs(endX - startX) <= 1 && abs(endY - startY) <= 1;
     case PieceType::Queen:
         // Mouvement comme une tour
         if (startX == endX || startY == endY) {
@@ -64,7 +65,8 @@ bool Piece::canMoveTo(int startX, int startY, int endX, int endY, const ChessBoa
         }
         return false;
     case PieceType::Knight:
-        return (abs(startX - endX) == 2 && abs(startY - endY) == 1) || (abs(startX - endX) == 1 && abs(startY - endY) == 2); // Le cavalier se déplace en "L"
+        // Le cavalier se déplace en "L"
+        return (abs(startX - endX) == 2 && abs(startY - endY) == 1) || (abs(startX - endX) == 1 && abs(startY - endY) == 2);
     case PieceType::Pawn:
         if (color == PieceColor::White) {
             if (startY == 1 && endY == startY + 2 && startX == endX && !board.isOccupied(endX, endY) && !board.isOccupied(endX, endY - 1)) {

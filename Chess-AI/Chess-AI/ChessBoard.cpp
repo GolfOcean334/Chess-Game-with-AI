@@ -106,6 +106,15 @@ void ChessBoard::draw(sf::RenderWindow& window) {
     }
 }
 
+Piece* ChessBoard::getPieceAt(int x, int y) const {
+    for (const Piece& piece : pieces) {
+        if (piece.getPosition().x == x * 100 && piece.getPosition().y == y * 100) {
+            return const_cast<Piece*>(&piece);
+        }
+    }
+    return nullptr;
+}
+
 bool ChessBoard::isOccupied(int x, int y) const {
     for (const Piece& piece : pieces) {
         if (piece.getPosition().x == x * 100 && piece.getPosition().y == y * 100) {
@@ -114,6 +123,36 @@ bool ChessBoard::isOccupied(int x, int y) const {
     }
     return false;
 }
+
+bool ChessBoard::isClearPath(int startX, int startY, int endX, int endY) const {
+    if (startX == endX) {  // Mouvement vertical
+        int minY = std::min(startY, endY);
+        int maxY = std::max(startY, endY);
+        for (int y = minY + 1; y < maxY; ++y) {
+            if (isOccupied(startX, y)) return false;
+        }
+    }
+    else if (startY == endY) {  // Mouvement horizontal
+        int minX = std::min(startX, endX);
+        int maxX = std::max(startX, endX);
+        for (int x = minX + 1; x < maxX; ++x) {
+            if (isOccupied(x, startY)) return false;
+        }
+    }
+    else if (abs(startX - endX) == abs(startY - endY)) {  // Mouvement en diagonale
+        int xStep = (endX > startX) ? 1 : -1;
+        int yStep = (endY > startY) ? 1 : -1;
+        int x = startX + xStep;
+        int y = startY + yStep;
+        while (x != endX && y != endY) {
+            if (isOccupied(x, y)) return false;
+            x += xStep;
+            y += yStep;
+        }
+    }
+    return true;
+}
+
 
 bool ChessBoard::movePiece(int startX, int startY, int endX, int endY) {
     for (Piece& piece : pieces) {

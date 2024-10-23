@@ -42,37 +42,53 @@ bool Piece::canMoveTo(int startX, int startY, int endX, int endY, const ChessBoa
     case PieceType::King:
         return abs(endX - startX) <= 1 && abs(endY - startY) <= 1;  // Déplacement d'une case autour du roi
     case PieceType::Queen:
-        return (startX == endX || startY == endY) || (abs(startX - endX) == abs(startY - endY)); // Déplacement en ligne ou en diagonale (reine)
+        // Mouvement comme une tour
+        if (startX == endX || startY == endY) {
+            return board.isClearPath(startX, startY, endX, endY);
+        }
+        // Mouvement comme un fou
+        else if (abs(startX - endX) == abs(startY - endY)) {
+            return board.isClearPath(startX, startY, endX, endY);
+        }
+        return false;
     case PieceType::Rook:
-        if (startX == endX) { // Mouvement vertical
-        int minY = std::min(startY, endY);
-        int maxY = std::max(startY, endY);
-        for (int y = minY + 1; y < maxY; ++y) {
-            if (board.isOccupied(startX, y)) return false; // Empêche de sauter par-dessus d'autres pièces
+        // Mouvement vertical et horizontal
+        if (startX == endX || startY == endY) {
+            return board.isClearPath(startX, startY, endX, endY);
         }
-        return true;
-    } else if (startY == endY) { // Mouvement horizontal
-        int minX = std::min(startX, endX);
-        int maxX = std::max(startX, endX);
-        for (int x = minX + 1; x < maxX; ++x) {
-            if (board.isOccupied(x, startY)) return false;
-        }
-        return true;
-    }
-    return false;
+        return false;
     case PieceType::Bishop:
-        return abs(startX - endX) == abs(startY - endY); // Le fou se déplace en diagonale
+        // Mouvement en diagonal
+        if (abs(startX - endX) == abs(startY - endY)) {
+            return board.isClearPath(startX, startY, endX, endY);
+        }
+        return false;
     case PieceType::Knight:
         return (abs(startX - endX) == 2 && abs(startY - endY) == 1) || (abs(startX - endX) == 1 && abs(startY - endY) == 2); // Le cavalier se déplace en "L"
     case PieceType::Pawn:
         if (color == PieceColor::White) {
-            if (startY == 1 && endY == startY + 2 && startX == endX) return true;  // Premier coup du pion blanc
-            return endY == startY + 1 && startX == endX;
+            if (startY == 1 && endY == startY + 2 && startX == endX && !board.isOccupied(endX, endY) && !board.isOccupied(endX, endY - 1)) {
+                return true;  // Premier coup du pion blanc
+            }
+            if (endY == startY + 1 && startX == endX && !board.isOccupied(endX, endY)) {
+                return true;  // Mouvement de base
+            }
+            if (endY == startY + 1 && abs(startX - endX) == 1 && board.isOccupied(endX, endY) && board.getPieceAt(endX, endY)->getColor() != this->color) {
+                return true;  // Capture en diagonale
+            }
         }
         else {
-            if (startY == 6 && endY == startY - 2 && startX == endX) return true;  // Premier coup du pion noir
-            return endY == startY - 1 && startX == endX;
+            if (startY == 6 && endY == startY - 2 && startX == endX && !board.isOccupied(endX, endY) && !board.isOccupied(endX, endY + 1)) {
+                return true;  // Premier coup du pion noir
+            }
+            if (endY == startY - 1 && startX == endX && !board.isOccupied(endX, endY)) {
+                return true;  // Mouvement de base
+            }
+            if (endY == startY - 1 && abs(startX - endX) == 1 && board.isOccupied(endX, endY) && board.getPieceAt(endX, endY)->getColor() != this->color) {
+                return true;  // Capture en diagonale
+            }
         }
+        return false;
     case PieceType::None:
         return false;
     default:

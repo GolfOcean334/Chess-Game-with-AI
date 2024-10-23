@@ -13,7 +13,10 @@ public:
     void loadPieces();
     void draw(sf::RenderWindow& window);
 
+    Piece* getPieceAt(int x, int y) const;
+
     bool isOccupied(int x, int y)const;
+    bool isClearPath(int startX, int startY, int endX, int endY) const;
 
     bool movePiece(int startX, int startY, int endX, int endY);
 

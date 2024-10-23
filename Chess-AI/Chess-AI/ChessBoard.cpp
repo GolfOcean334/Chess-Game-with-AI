@@ -155,27 +155,25 @@ bool ChessBoard::isClearPath(int startX, int startY, int endX, int endY) const {
 
 void ChessBoard::promotePawn(Piece& pawn) {
     // Création d'une nouvelle fenêtre de promotion
-    sf::RenderWindow promotionWindow(sf::VideoMode(300, 200), "Promote Pawn");
+    sf::RenderWindow promotionWindow(sf::VideoMode(500, 150), "Promote Pawn");
 
     // Création des boutons pour la promotion
-    sf::RectangleShape queenButton(sf::Vector2f(100, 50));
-    queenButton.setPosition(50, 50);
+    sf::RectangleShape queenButton(sf::Vector2f(100, 100));
+    queenButton.setPosition(50, 25);
     queenButton.setFillColor(sf::Color::Blue);
 
-    sf::RectangleShape rookButton(sf::Vector2f(100, 50));
-    rookButton.setPosition(50, 110);
+    sf::RectangleShape rookButton(sf::Vector2f(100, 100));
+    rookButton.setPosition(200, 25);
     rookButton.setFillColor(sf::Color::Red);
 
-    sf::RectangleShape bishopButton(sf::Vector2f(50, 50));
-    bishopButton.setPosition(200, 50);
+    sf::RectangleShape bishopButton(sf::Vector2f(100, 100));
+    bishopButton.setPosition(350, 25);
     bishopButton.setFillColor(sf::Color::Yellow);
 
     // Boucle d'événements pour gérer le choix
     while (promotionWindow.isOpen()) {
         sf::Event event;
         while (promotionWindow.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                promotionWindow.close();
 
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {

@@ -85,6 +85,10 @@ bool Piece::canMoveTo(int startX, int startY, int endX, int endY, const ChessBoa
             if (endY == startY + 1 && abs(startX - endX) == 1 && board.isOccupied(endX, endY) && board.getPieceAt(endX, endY)->getColor() != this->color) {
                 return true;  // Capture en diagonale
             }
+            // Prise en passant
+            if (abs(startX - endX) == 1 && startY + 1 == endY) {
+                return board.handleEnPassant(startX, startY, endX, endY, *const_cast<Piece*>(this));
+            }
         }
         else {
             if (startY == 6 && endY == startY - 2 && startX == endX && !board.isOccupied(endX, endY) && !board.isOccupied(endX, endY + 1)) {
@@ -95,6 +99,10 @@ bool Piece::canMoveTo(int startX, int startY, int endX, int endY, const ChessBoa
             }
             if (endY == startY - 1 && abs(startX - endX) == 1 && board.isOccupied(endX, endY) && board.getPieceAt(endX, endY)->getColor() != this->color) {
                 return true;  // Capture en diagonale
+            }
+            // Prise en passant
+            if (abs(startX - endX) == 1 && startY - 1 == endY) {
+                return board.handleEnPassant(startX, startY, endX, endY, *const_cast<Piece*>(this));
             }
         }
         return false;

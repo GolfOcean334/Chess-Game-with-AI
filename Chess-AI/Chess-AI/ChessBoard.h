@@ -30,8 +30,9 @@ public:
 
     void promotePawn(Piece& piece);
 
-    bool movePiece(int startX, int startY, int endX, int endY);
-    bool handleEnPassant(int startX, int startY, int endX, int endY, Piece& piece);
+    bool movePiece(int startX, int startY, int endX, int endY); 
+    const Piece* handleEnPassant(int startX, int startY, int endX, int endY, const Piece& piece) const;
+
 
 private:
     sf::RectangleShape chessBoardSquares[8][8];

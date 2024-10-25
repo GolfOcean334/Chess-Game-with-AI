@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 
 
-class Game {
+class GamePvP {
 public:
-	Game();
+	GamePvP();
 };

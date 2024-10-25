@@ -1,7 +1,7 @@
 #include "ChessBoard.h"
-#include "Game.h"
+#include "GamePvP.h"
 
-Game::Game() {
+GamePvP::GamePvP() {
     sf::RenderWindow window(sf::VideoMode(800, 800), "Chess Game");
 
     ChessBoard chessBoard;

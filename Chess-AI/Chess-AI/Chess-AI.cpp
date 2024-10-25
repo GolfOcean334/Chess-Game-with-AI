@@ -1,6 +1,6 @@
-#include "Game.h"
+#include "GamePvP.h"
 
 int main() {
-    Game::Game();
+    GamePvP::GamePvP();
     return 0;
 }

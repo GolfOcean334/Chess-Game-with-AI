@@ -38,19 +38,19 @@ void ChessBoard::initChessBoard() {
 void ChessBoard::loadPieces() {
     // Pièces blanches
     // Tour, cavalier, fou, reine, roi, fou, cavalier, tour
-    pieces.push_back(Piece(PieceType::Rook, PieceColor::White, whiteRookTexture));     // Tour a1
-    pieces.push_back(Piece(PieceType::Knight, PieceColor::White, whiteKnightTexture)); // Cavalier b1
-    pieces.push_back(Piece(PieceType::Bishop, PieceColor::White, whiteBishopTexture)); // Fou c1
-    pieces.push_back(Piece(PieceType::Queen, PieceColor::White, whiteQueenTexture));   // Reine d1
-    pieces.push_back(Piece(PieceType::King, PieceColor::White, whiteKingTexture));     // Roi e1
-    pieces.push_back(Piece(PieceType::Bishop, PieceColor::White, whiteBishopTexture)); // Fou f1
-    pieces.push_back(Piece(PieceType::Knight, PieceColor::White, whiteKnightTexture)); // Cavalier g1
-    pieces.push_back(Piece(PieceType::Rook, PieceColor::White, whiteRookTexture));     // Tour h1
+    pieces.push_back(Piece(PieceType::Rook, PieceColor::Black, blackRookTexture));     // Tour a1
+    pieces.push_back(Piece(PieceType::Knight, PieceColor::Black, blackKnightTexture)); // Cavalier b1
+    pieces.push_back(Piece(PieceType::Bishop, PieceColor::Black, blackBishopTexture)); // Fou c1
+    pieces.push_back(Piece(PieceType::Queen, PieceColor::Black, blackQueenTexture));   // Reine d1
+    pieces.push_back(Piece(PieceType::King, PieceColor::Black, blackKingTexture));     // Roi e1
+    pieces.push_back(Piece(PieceType::Bishop, PieceColor::Black, blackBishopTexture)); // Fou f1
+    pieces.push_back(Piece(PieceType::Knight, PieceColor::Black, blackKnightTexture)); // Cavalier g1
+    pieces.push_back(Piece(PieceType::Rook, PieceColor::Black, blackRookTexture));     // Tour h1
 
     // Pions blancs
     // Pions sur la rangée 2
     for (int i = 0; i < 8; i++) {
-        pieces.push_back(Piece(PieceType::Pawn, PieceColor::White, whitePawnTexture));
+        pieces.push_back(Piece(PieceType::Pawn, PieceColor::Black, blackPawnTexture));
         pieces[8 + i].setPosition(i * 100, 100);
     }
 
@@ -66,19 +66,19 @@ void ChessBoard::loadPieces() {
 
     // Pièces noires
     // Tour, cavalier, fou, reine, roi, fou, cavalier, tour
-    pieces.push_back(Piece(PieceType::Rook, PieceColor::Black, blackRookTexture));     // Tour a8
-    pieces.push_back(Piece(PieceType::Knight, PieceColor::Black, blackKnightTexture)); // Cavalier b8
-    pieces.push_back(Piece(PieceType::Bishop, PieceColor::Black, blackBishopTexture)); // Fou c8
-    pieces.push_back(Piece(PieceType::Queen, PieceColor::Black, blackQueenTexture));   // Reine d8
-    pieces.push_back(Piece(PieceType::King, PieceColor::Black, blackKingTexture));     // Roi e8
-    pieces.push_back(Piece(PieceType::Bishop, PieceColor::Black, blackBishopTexture)); // Fou f8
-    pieces.push_back(Piece(PieceType::Knight, PieceColor::Black, blackKnightTexture)); // Cavalier g8
-    pieces.push_back(Piece(PieceType::Rook, PieceColor::Black, blackRookTexture));     // Tour h8
+    pieces.push_back(Piece(PieceType::Rook, PieceColor::White, whiteRookTexture));     // Tour a8
+    pieces.push_back(Piece(PieceType::Knight, PieceColor::White, whiteKnightTexture)); // Cavalier b8
+    pieces.push_back(Piece(PieceType::Bishop, PieceColor::White, whiteBishopTexture)); // Fou c8
+    pieces.push_back(Piece(PieceType::Queen, PieceColor::White, whiteQueenTexture));   // Reine d8
+    pieces.push_back(Piece(PieceType::King, PieceColor::White, whiteKingTexture));     // Roi e8
+    pieces.push_back(Piece(PieceType::Bishop, PieceColor::White, whiteBishopTexture)); // Fou f8
+    pieces.push_back(Piece(PieceType::Knight, PieceColor::White, whiteKnightTexture)); // Cavalier g8
+    pieces.push_back(Piece(PieceType::Rook, PieceColor::White, whiteRookTexture));     // Tour h8
 
     // Pions noirs
     // Pions sur la rangée 7
     for (int i = 0; i < 8; i++) {
-        pieces.push_back(Piece(PieceType::Pawn, PieceColor::Black, blackPawnTexture));
+        pieces.push_back(Piece(PieceType::Pawn, PieceColor::White, whitePawnTexture));
         pieces[24 + i].setPosition(i * 100, 6 * 100);
     }
 
@@ -235,10 +235,21 @@ const Piece* ChessBoard::handleEnPassant(int startX, int startY, int endX, int e
             if (lastMove.endX == endX && lastMove.endY == startY) {
                 for (const Piece& p : pieces) {
                     if (p.getPosition().x == lastMove.endX * 100 && p.getPosition().y == lastMove.endY * 100) {
-                        return &p;  // Retourne un pointeur vers la pièce à supprimer
+                        return &p;
                     }
                 }
             }
+        }
+    }
+    return nullptr;
+}
+
+const Piece* ChessBoard::handleCastling(int startX, int startY, int endX, int endY, const Piece& piece) const {
+    if (piece.getType() == PieceType::King && abs(startX - endX) == 2 && startY == endY) {
+        int rookX = (endX > startX) ? 7 : 0;
+        const Piece* rook = getPieceAt(rookX, startY);
+        if (rook && rook->getType() == PieceType::Rook && isClearPath(startX, startY, rookX, startY)) {
+            return rook;
         }
     }
     return nullptr;
@@ -252,6 +263,18 @@ bool ChessBoard::movePiece(int startX, int startY, int endX, int endY) {
 
             if (piece.getPosition().x == startX * 100 && piece.getPosition().y == startY * 100) {
                 if (piece.canMoveTo(startX, startY, endX, endY, *this)) {
+
+                    // Déplacement du roi pour le roque
+                    const Piece* castlingRook = handleCastling(startX, startY, endX, endY, piece);
+                    if (castlingRook != nullptr) {
+                        int rookNewX = (endX > startX) ? 5 : 3;
+                        for (Piece& rook : pieces) {
+                            if (&rook == castlingRook) {
+                                rook.setPosition(rookNewX * 100, startY * 100);
+                                break;
+                            }
+                        }
+                    }
 
                     // Déplace la pièce normalement
                     piece.setPosition(endX * 100, endY * 100);

@@ -32,7 +32,7 @@ public:
 
     bool movePiece(int startX, int startY, int endX, int endY); 
     const Piece* handleEnPassant(int startX, int startY, int endX, int endY, const Piece& piece) const;
-
+    const Piece* handleCastling(int startX, int startY, int endX, int endY, const Piece& piece) const;
 
 private:
     sf::RectangleShape chessBoardSquares[8][8];

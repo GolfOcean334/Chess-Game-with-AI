@@ -1,9 +1,9 @@
 #include "Piece.h"
 #include "ChessBoard.h"
 
-Piece::Piece() : type(PieceType::None), color(PieceColor::None) {}
+Piece::Piece() : type(PieceType::None), color(Color::None) {}
 
-Piece::Piece(PieceType type, PieceColor color, const sf::Texture& texture) : type(type), color(color) {
+Piece::Piece(PieceType type, Color  color, const sf::Texture& texture) : type(type), color(color) {
     sprite.setTexture(texture);
 
     sf::Vector2u textureSize = texture.getSize();
@@ -32,12 +32,24 @@ PieceType Piece::getType() const {
     return type;
 }
 
-PieceColor Piece::getColor() const {
+Color Piece::getColor() const {
     return color;
 }
 
 sf::Vector2f Piece::getPosition() const {
     return sprite.getPosition();
+}
+
+int Piece::getPieceValue(PieceType type) {
+    switch (type) {
+    case PieceType::Pawn: return 1;
+    case PieceType::Knight: return 3;
+    case PieceType::Bishop: return 3;
+    case PieceType::Rook: return 5;
+    case PieceType::Queen: return 9;
+    case PieceType::King: return 1000;
+    default: return 0;
+    }
 }
 
 bool Piece::canMoveTo(int startX, int startY, int endX, int endY, const ChessBoard& board) const {
@@ -82,7 +94,7 @@ bool Piece::canMoveTo(int startX, int startY, int endX, int endY, const ChessBoa
         // Le cavalier se déplace en "L"
         return (abs(startX - endX) == 2 && abs(startY - endY) == 1) || (abs(startX - endX) == 1 && abs(startY - endY) == 2);
     case PieceType::Pawn:
-        if (color == PieceColor::Black) {
+        if (color == Color::Black) {
             if (startY == 1 && endY == startY + 2 && startX == endX && !board.isOccupied(endX, endY) && !board.isOccupied(endX, endY - 1)) {
                 return true;  // Premier coup du pion blanc
             }

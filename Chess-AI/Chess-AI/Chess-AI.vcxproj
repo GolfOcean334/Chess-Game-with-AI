@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessBoard.h" />
+    <ClInclude Include="Color.h" />
     <ClInclude Include="GameIA.h" />
     <ClInclude Include="GamePvP.h" />
     <ClInclude Include="Piece.h" />

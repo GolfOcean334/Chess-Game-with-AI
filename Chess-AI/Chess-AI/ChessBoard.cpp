@@ -1,6 +1,7 @@
 #include "ChessBoard.h"
+#include <iostream>
 
-ChessBoard::ChessBoard() : currentPlayer(PlayerColor::White) {
+ChessBoard::ChessBoard() : currentPlayer(Color::White) {
     blackKingTexture.loadFromFile("PNG/Black King.png");
     whiteKingTexture.loadFromFile("PNG/White King.png");
     blackQueenTexture.loadFromFile("PNG/Black Queen.png");
@@ -38,19 +39,19 @@ void ChessBoard::initChessBoard() {
 void ChessBoard::loadPieces() {
     // Pièces blanches
     // Tour, cavalier, fou, reine, roi, fou, cavalier, tour
-    pieces.push_back(Piece(PieceType::Rook, PieceColor::Black, blackRookTexture));     // Tour a1
-    pieces.push_back(Piece(PieceType::Knight, PieceColor::Black, blackKnightTexture)); // Cavalier b1
-    pieces.push_back(Piece(PieceType::Bishop, PieceColor::Black, blackBishopTexture)); // Fou c1
-    pieces.push_back(Piece(PieceType::Queen, PieceColor::Black, blackQueenTexture));   // Reine d1
-    pieces.push_back(Piece(PieceType::King, PieceColor::Black, blackKingTexture));     // Roi e1
-    pieces.push_back(Piece(PieceType::Bishop, PieceColor::Black, blackBishopTexture)); // Fou f1
-    pieces.push_back(Piece(PieceType::Knight, PieceColor::Black, blackKnightTexture)); // Cavalier g1
-    pieces.push_back(Piece(PieceType::Rook, PieceColor::Black, blackRookTexture));     // Tour h1
+    pieces.push_back(Piece(PieceType::Rook, Color::Black, blackRookTexture));     // Tour a1
+    pieces.push_back(Piece(PieceType::Knight, Color::Black, blackKnightTexture)); // Cavalier b1
+    pieces.push_back(Piece(PieceType::Bishop, Color::Black, blackBishopTexture)); // Fou c1
+    pieces.push_back(Piece(PieceType::Queen, Color::Black, blackQueenTexture));   // Reine d1
+    pieces.push_back(Piece(PieceType::King, Color::Black, blackKingTexture));     // Roi e1
+    pieces.push_back(Piece(PieceType::Bishop, Color::Black, blackBishopTexture)); // Fou f1
+    pieces.push_back(Piece(PieceType::Knight, Color::Black, blackKnightTexture)); // Cavalier g1
+    pieces.push_back(Piece(PieceType::Rook, Color::Black, blackRookTexture));     // Tour h1
 
     // Pions blancs
     // Pions sur la rangée 2
     for (int i = 0; i < 8; i++) {
-        pieces.push_back(Piece(PieceType::Pawn, PieceColor::Black, blackPawnTexture));
+        pieces.push_back(Piece(PieceType::Pawn, Color::Black, blackPawnTexture));
         pieces[8 + i].setPosition(i * 100, 100);
     }
 
@@ -66,19 +67,19 @@ void ChessBoard::loadPieces() {
 
     // Pièces noires
     // Tour, cavalier, fou, reine, roi, fou, cavalier, tour
-    pieces.push_back(Piece(PieceType::Rook, PieceColor::White, whiteRookTexture));     // Tour a8
-    pieces.push_back(Piece(PieceType::Knight, PieceColor::White, whiteKnightTexture)); // Cavalier b8
-    pieces.push_back(Piece(PieceType::Bishop, PieceColor::White, whiteBishopTexture)); // Fou c8
-    pieces.push_back(Piece(PieceType::Queen, PieceColor::White, whiteQueenTexture));   // Reine d8
-    pieces.push_back(Piece(PieceType::King, PieceColor::White, whiteKingTexture));     // Roi e8
-    pieces.push_back(Piece(PieceType::Bishop, PieceColor::White, whiteBishopTexture)); // Fou f8
-    pieces.push_back(Piece(PieceType::Knight, PieceColor::White, whiteKnightTexture)); // Cavalier g8
-    pieces.push_back(Piece(PieceType::Rook, PieceColor::White, whiteRookTexture));     // Tour h8
+    pieces.push_back(Piece(PieceType::Rook, Color::White, whiteRookTexture));     // Tour a8
+    pieces.push_back(Piece(PieceType::Knight, Color::White, whiteKnightTexture)); // Cavalier b8
+    pieces.push_back(Piece(PieceType::Bishop, Color::White, whiteBishopTexture)); // Fou c8
+    pieces.push_back(Piece(PieceType::Queen, Color::White, whiteQueenTexture));   // Reine d8
+    pieces.push_back(Piece(PieceType::King, Color::White, whiteKingTexture));     // Roi e8
+    pieces.push_back(Piece(PieceType::Bishop, Color::White, whiteBishopTexture)); // Fou f8
+    pieces.push_back(Piece(PieceType::Knight, Color::White, whiteKnightTexture)); // Cavalier g8
+    pieces.push_back(Piece(PieceType::Rook, Color::White, whiteRookTexture));     // Tour h8
 
     // Pions noirs
     // Pions sur la rangée 7
     for (int i = 0; i < 8; i++) {
-        pieces.push_back(Piece(PieceType::Pawn, PieceColor::White, whitePawnTexture));
+        pieces.push_back(Piece(PieceType::Pawn, Color::White, whitePawnTexture));
         pieces[24 + i].setPosition(i * 100, 6 * 100);
     }
 
@@ -164,7 +165,7 @@ void ChessBoard::promotePawn(Piece& pawn) {
     sf::RectangleShape bishopSprite(sf::Vector2f(iconSize, iconSize));
 
     // Choisir la texture en fonction de la couleur du pion
-    if (pawn.getColor() == PieceColor::White) {
+    if (pawn.getColor() == Color::White) {
         queenSprite.setTexture(&whiteQueenTexture);
         rookSprite.setTexture(&whiteRookTexture);
         bishopSprite.setTexture(&whiteBishopTexture);
@@ -190,7 +191,7 @@ void ChessBoard::promotePawn(Piece& pawn) {
                     sf::Vector2i mousePos = sf::Mouse::getPosition(promotionWindow);
                     if (queenSprite.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         pawn.setType(PieceType::Queen);
-                        if (pawn.getColor() == PieceColor::White)
+                        if (pawn.getColor() == Color::White)
                         {
                             pawn.setTexture(whiteQueenTexture);
                         }else
@@ -199,7 +200,7 @@ void ChessBoard::promotePawn(Piece& pawn) {
                     }
                     else if (rookSprite.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         pawn.setType(PieceType::Rook);
-                        if (pawn.getColor() == PieceColor::White)
+                        if (pawn.getColor() == Color::White)
                         {
                             pawn.setTexture(whiteRookTexture);
                         }
@@ -209,7 +210,7 @@ void ChessBoard::promotePawn(Piece& pawn) {
                     }
                     else if (bishopSprite.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         pawn.setType(PieceType::Bishop); 
-                        if (pawn.getColor() == PieceColor::White)
+                        if (pawn.getColor() == Color::White)
                         {
                             pawn.setTexture(whiteBishopTexture);
                         }
@@ -255,11 +256,52 @@ const Piece* ChessBoard::handleCastling(int startX, int startY, int endX, int en
     return nullptr;
 }
 
+int ChessBoard::evaluateMove(int startX, int startY, int endX, int endY) {
+    int score = 0;
+
+    // Si la destination contient une pièce adverse, ajoutez la valeur de cette pièce au score
+    Piece* targetPiece = getPieceAt(endX, endY);
+    if (targetPiece && targetPiece->getColor() != currentPlayer) {
+        score += Piece::getPieceValue(targetPiece->getType());
+    }
+
+    // Ajoutez des critères supplémentaires pour évaluer les coups, par exemple :
+    // - Priorité aux coups qui évitent de mettre le roi en échec
+    // - Augmentation du score pour des positions stratégiques
+    // - Réduction du score si le coup expose le roi à un danger
+
+    return score;
+}
+
+std::tuple<int, int, int, int> ChessBoard::getBestMove() {
+    int bestScore = -10000;
+    std::tuple<int, int, int, int> bestMove;
+
+    for (Piece& piece : pieces) {
+        if (piece.getColor() == Color::Black) {
+            for (int endX = 0; endX < 8; ++endX) {
+                for (int endY = 0; endY < 8; ++endY) {
+                    int startX = piece.getPosition().x / 100;
+                    int startY = piece.getPosition().y / 100;
+
+                    if (piece.canMoveTo(startX, startY, endX, endY, *this)) {
+                        int moveScore = evaluateMove(startX, startY, endX, endY);
+                        if (moveScore > bestScore) {
+                            bestScore = moveScore;
+                            bestMove = std::make_tuple(startX, startY, endX, endY);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return bestMove;
+}
 
 bool ChessBoard::movePiece(int startX, int startY, int endX, int endY) {
     for (Piece& piece : pieces) {
-        if ((currentPlayer == PlayerColor::White && piece.getColor() == PieceColor::White) ||
-            (currentPlayer == PlayerColor::Black && piece.getColor() == PieceColor::Black)) {
+        if ((currentPlayer == Color::White && piece.getColor() == Color::White) ||
+            (currentPlayer == Color::Black && piece.getColor() == Color::Black)) {
 
             if (piece.getPosition().x == startX * 100 && piece.getPosition().y == startY * 100) {
                 if (piece.canMoveTo(startX, startY, endX, endY, *this)) {
@@ -306,8 +348,12 @@ bool ChessBoard::movePiece(int startX, int startY, int endX, int endY) {
                     }
                     lastMove = { startX, startY, endX, endY, piece.getType(), piece.getColor() };
 
+                    // Calcule et affiche la valeur du coup
+                    int moveScore = evaluateMove(startX, startY, endX, endY);
+                    std::cout << "Score du coup: " << moveScore << std::endl;
+
                     // Changer de joueur
-                    currentPlayer = (currentPlayer == PlayerColor::White) ? PlayerColor::Black : PlayerColor::White;
+                    currentPlayer = (currentPlayer == Color::White) ? Color::Black : Color::White;
                     return true;
                 }
                 return false;

@@ -4,18 +4,19 @@
 
 #include <SFML/Graphics.hpp>
 #include "Piece.h"
+#include "Color.h"
 #include <vector>
+#include <tuple>
 
 struct LastMove {
     int startX, startY, endX, endY;
     PieceType pieceType;
-    PieceColor pieceColor;
+    Color pieceColor;
 };
 
 class ChessBoard {
 public:
-    enum class PlayerColor { White, Black };
-    PlayerColor currentPlayer;
+    Color currentPlayer;
     LastMove lastMove;
 
     ChessBoard();
@@ -29,10 +30,13 @@ public:
     bool isClearPath(int startX, int startY, int endX, int endY) const;
 
     void promotePawn(Piece& piece);
-
-    bool movePiece(int startX, int startY, int endX, int endY); 
     const Piece* handleEnPassant(int startX, int startY, int endX, int endY, const Piece& piece) const;
     const Piece* handleCastling(int startX, int startY, int endX, int endY, const Piece& piece) const;
+
+    int evaluateMove(int startX, int startY, int endX, int endY);
+    std::tuple<int, int, int, int> getBestMove();
+
+    bool movePiece(int startX, int startY, int endX, int endY);
 
 private:
     sf::RectangleShape chessBoardSquares[8][8];

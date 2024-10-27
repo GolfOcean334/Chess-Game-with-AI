@@ -2,7 +2,7 @@
 #include "GamePvP.h"
 
 GamePvP::GamePvP() {
-    sf::RenderWindow window(sf::VideoMode(800, 800), "Chess Game");
+    sf::RenderWindow window(sf::VideoMode(800, 800), "Chess Game PvP");
 
     ChessBoard chessBoard;
 

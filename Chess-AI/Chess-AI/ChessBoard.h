@@ -34,7 +34,7 @@ public:
 
     ChessBoard clone() const;
     int evaluateBoard() const;
-    int evaluateBestMove(int depth);
+    int evaluateBestMove(int depth, int alpha, int beta);
 
     void aiMove();
     bool movePiece(int startX, int startY, int endX, int endY);

@@ -278,40 +278,65 @@ int ChessBoard::evaluateBoard() const {
     return score;
 }
 
-int ChessBoard::evaluateBestMove(int depth) {
+int ChessBoard::evaluateBestMove(int depth, int alpha, int beta) {
     if (depth == 0) {
         return evaluateBoard();
     }
 
-    int bestScore = (currentPlayer == PlayerColor::White) ? -10000 : 10000;
+    if (currentPlayer == PlayerColor::Black) { // Maximisation pour le joueur noir
+        int maxEval = -10000;
+        for (Piece& piece : pieces) {
+            if (piece.getColor() == PieceColor::Black) {
+                for (int endX = 0; endX < 8; ++endX) {
+                    for (int endY = 0; endY < 8; ++endY) {
+                        int startX = piece.getPosition().x / 100;
+                        int startY = piece.getPosition().y / 100;
 
-    for (Piece& piece : pieces) {
-        if ((currentPlayer == PlayerColor::White && piece.getColor() == PieceColor::White) ||
-            (currentPlayer == PlayerColor::Black && piece.getColor() == PieceColor::Black)) {
+                        if (piece.canMoveTo(startX, startY, endX, endY, *this)) {
+                            ChessBoard clonedBoard = this->clone();
+                            clonedBoard.movePiece(startX, startY, endX, endY);
+                            clonedBoard.currentPlayer = PlayerColor::White;
 
-            for (int endX = 0; endX < 8; ++endX) {
-                for (int endY = 0; endY < 8; ++endY) {
-                    int startX = piece.getPosition().x / 100;
-                    int startY = piece.getPosition().y / 100;
-
-                    if (piece.canMoveTo(startX, startY, endX, endY, *this)) {
-                        ChessBoard clonedBoard = this->clone();
-                        clonedBoard.movePiece(startX, startY, endX, endY);
-                        clonedBoard.currentPlayer = (currentPlayer == PlayerColor::White) ? PlayerColor::Black : PlayerColor::White;
-
-                        int score = clonedBoard.evaluateBestMove(depth - 1);
-                        if (currentPlayer == PlayerColor::White) {
-                            bestScore = std::max(bestScore, score);
-                        }
-                        else {
-                            bestScore = std::min(bestScore, score);
+                            int eval = clonedBoard.evaluateBestMove(depth - 1, alpha, beta);
+                            maxEval = std::max(maxEval, eval);
+                            alpha = std::max(alpha, eval);
+                            if (beta <= alpha) { // Élagage
+                                break;
+                            }
                         }
                     }
                 }
             }
         }
+        return maxEval;
     }
-    return bestScore;
+    else { // Minimisation pour le joueur blanc
+        int minEval = 10000;
+        for (Piece& piece : pieces) {
+            if (piece.getColor() == PieceColor::White) {
+                for (int endX = 0; endX < 8; ++endX) {
+                    for (int endY = 0; endY < 8; ++endY) {
+                        int startX = piece.getPosition().x / 100;
+                        int startY = piece.getPosition().y / 100;
+
+                        if (piece.canMoveTo(startX, startY, endX, endY, *this)) {
+                            ChessBoard clonedBoard = this->clone();
+                            clonedBoard.movePiece(startX, startY, endX, endY);
+                            clonedBoard.currentPlayer = PlayerColor::Black;
+
+                            int eval = clonedBoard.evaluateBestMove(depth - 1, alpha, beta);
+                            minEval = std::min(minEval, eval);
+                            beta = std::min(beta, eval);
+                            if (beta <= alpha) { // Élagage
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return minEval;
+    }
 }
 
 void ChessBoard::aiMove() {
@@ -331,7 +356,7 @@ void ChessBoard::aiMove() {
                         clonedBoard.movePiece(startX, startY, endX, endY);
                         clonedBoard.currentPlayer = PlayerColor::White;
 
-                        int score = clonedBoard.evaluateBestMove(1); // Profondeur de recherche
+                        int score = clonedBoard.evaluateBestMove(1, -10000, 10000); // Profondeur de recherche
                         if (score > bestScore) {
                             bestScore = score;
                             bestMoveStartX = startX;

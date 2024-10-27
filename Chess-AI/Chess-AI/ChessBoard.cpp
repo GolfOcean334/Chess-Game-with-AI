@@ -255,6 +255,101 @@ const Piece* ChessBoard::handleCastling(int startX, int startY, int endX, int en
     return nullptr;
 }
 
+ChessBoard ChessBoard::clone() const {
+    ChessBoard clonedBoard = *this;
+    clonedBoard.pieces = pieces;
+    return clonedBoard;
+}
+
+int ChessBoard::evaluateBoard() const {
+    int score = 0;
+    for (const Piece& piece : pieces) {
+        int pieceValue = 0;
+        switch (piece.getType()) {
+        case PieceType::Pawn: pieceValue = 1; break;
+        case PieceType::Knight: case PieceType::Bishop: pieceValue = 3; break;
+        case PieceType::Rook: pieceValue = 5; break;
+        case PieceType::Queen: pieceValue = 9; break;
+        case PieceType::King: pieceValue = 100; break;
+        default: break;
+        }
+        score += (piece.getColor() == PieceColor::White ? pieceValue : -pieceValue);
+    }
+    return score;
+}
+
+int ChessBoard::evaluateBestMove(int depth) {
+    if (depth == 0) {
+        return evaluateBoard();
+    }
+
+    int bestScore = (currentPlayer == PlayerColor::White) ? -10000 : 10000;
+
+    for (Piece& piece : pieces) {
+        if ((currentPlayer == PlayerColor::White && piece.getColor() == PieceColor::White) ||
+            (currentPlayer == PlayerColor::Black && piece.getColor() == PieceColor::Black)) {
+
+            for (int endX = 0; endX < 8; ++endX) {
+                for (int endY = 0; endY < 8; ++endY) {
+                    int startX = piece.getPosition().x / 100;
+                    int startY = piece.getPosition().y / 100;
+
+                    if (piece.canMoveTo(startX, startY, endX, endY, *this)) {
+                        ChessBoard clonedBoard = this->clone();
+                        clonedBoard.movePiece(startX, startY, endX, endY);
+                        clonedBoard.currentPlayer = (currentPlayer == PlayerColor::White) ? PlayerColor::Black : PlayerColor::White;
+
+                        int score = clonedBoard.evaluateBestMove(depth - 1);
+                        if (currentPlayer == PlayerColor::White) {
+                            bestScore = std::max(bestScore, score);
+                        }
+                        else {
+                            bestScore = std::min(bestScore, score);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return bestScore;
+}
+
+void ChessBoard::aiMove() {
+    int bestScore = -10000;
+    int bestMoveStartX = -1, bestMoveStartY = -1;
+    int bestMoveEndX = -1, bestMoveEndY = -1;
+
+    for (Piece& piece : pieces) {
+        if (piece.getColor() == PieceColor::Black) {
+            int startX = piece.getPosition().x / 100;
+            int startY = piece.getPosition().y / 100;
+
+            for (int endX = 0; endX < 8; ++endX) {
+                for (int endY = 0; endY < 8; ++endY) {
+                    if (piece.canMoveTo(startX, startY, endX, endY, *this)) {
+                        ChessBoard clonedBoard = this->clone();
+                        clonedBoard.movePiece(startX, startY, endX, endY);
+                        clonedBoard.currentPlayer = PlayerColor::White;
+
+                        int score = clonedBoard.evaluateBestMove(1); // Profondeur de recherche
+                        if (score > bestScore) {
+                            bestScore = score;
+                            bestMoveStartX = startX;
+                            bestMoveStartY = startY;
+                            bestMoveEndX = endX;
+                            bestMoveEndY = endY;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (bestMoveStartX != -1) {
+        movePiece(bestMoveStartX, bestMoveStartY, bestMoveEndX, bestMoveEndY);
+    }
+}
+
 
 bool ChessBoard::movePiece(int startX, int startY, int endX, int endY) {
     for (Piece& piece : pieces) {

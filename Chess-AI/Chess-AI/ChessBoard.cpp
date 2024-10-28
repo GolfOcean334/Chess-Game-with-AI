@@ -264,6 +264,11 @@ bool ChessBoard::movePiece(int startX, int startY, int endX, int endY) {
             if (piece.getPosition().x == startX * 100 && piece.getPosition().y == startY * 100) {
                 if (piece.canMoveTo(startX, startY, endX, endY, *this)) {
 
+                    // Vérifie si la destination est occupée par une pièce de la même couleur
+                    if (isOccupied(endX, endY) && getPieceAt(endX, endY)->getColor() == piece.getColor()) {
+                        return false; // Mouvement non autorisé
+                    }
+
                     // Déplacement du roi pour le roque
                     const Piece* castlingRook = handleCastling(startX, startY, endX, endY, piece);
                     if (castlingRook != nullptr) {

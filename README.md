@@ -45,6 +45,12 @@ This is a chess game developed in C++ using the SFML library. The game allows pl
 *   Click to select a piece.
     
 *   Click on a valid square to move it.
+
+
+License
+-------
+
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/GolfOcean334/Chess-AI/blob/main/LICENSE) file for more details.
     
 
 Français
@@ -91,3 +97,9 @@ Ce jeu d'échecs est développé en C++ avec la bibliothèque SFML. Le jeu propo
 *   Cliquez pour sélectionner une pièce.
     
 *   Cliquez sur une case valide pour la déplacer.
+
+
+Licence
+-------
+
+Ce projet est sous la license MIT. Voir le fichier [LICENSE](https://github.com/GolfOcean334/Chess-AI/blob/main/LICENSE) pour plus de détails.
